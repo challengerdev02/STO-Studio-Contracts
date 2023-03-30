@@ -10,12 +10,12 @@ async function main() {
     const Ordinals = await ethers.getContractFactory("Ordinals");
     console.log("Preparing upgrade...");
     const MyContract = await upgrades.upgradeProxy(proxyAddress, Ordinals);
-    const myContract = await MyContract.deploy();
+    await MyContract.deployed();
 
-    console.log('MyContract deployed to:', myContract.address);
+    console.log('MyContract deployed to:', MyContract.address);
 
     const data = {
-        address: myContract.address
+        address: MyContract.address
     };
 
     fs.writeFileSync('contract-address.json', JSON.stringify(data));
