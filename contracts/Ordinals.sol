@@ -46,11 +46,11 @@ contract Ordinals is OwnableUpgradeable {
         address coll,
         uint256 tokenId,
         string memory inscriptionId,
-        string memory message,
         bytes memory signature
     ) external {
         require(bytes(_inscription[coll][tokenId]).length == 0, "DOUBLE");
-        address signer = VerifyMessage(message, signature);
+        bytes32 hashedMessage = hashMessage(coll, tokenId, inscriptionId);
+        address signer = VerifyMessage(hashedMessage, signature);
         require(signer == msg.sender, "Invalid signature");
 
         if (coll != address(0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB)) {
@@ -63,13 +63,12 @@ contract Ordinals is OwnableUpgradeable {
     }
 
     function VerifyMessage(
-        string memory message,
+        bytes32 _hashedMessage,
         bytes memory signature
     ) public pure returns (address) {
         bytes32 r;
         bytes32 s;
         uint8 v;
-        bytes32 _hashedMessage = keccak256(bytes(message));
 
         if (signature.length != 65) {
             return address(0);
@@ -92,5 +91,14 @@ contract Ordinals is OwnableUpgradeable {
         address signer = ecrecover(prefixedHashMessage, v, r, s);
 
         return signer;
+    }
+
+    function hashMessage(
+        address coll,
+        uint256 tokenId,
+        string memory inscriptionId
+    ) public pure returns (bytes32) {
+        bytes32 _hashedMessage = keccak256(abi.encodePacked(coll, tokenId, inscriptionId));
+        return _hashedMessage;
     }
 }
