@@ -9,6 +9,7 @@
     "hardhat-ethers": "^1.0.1"
   },
   "dependencies": {
-    "@openzeppelin/hardhat-upgrades": "^1.22.1"
+    "@openzeppelin/hardhat-upgrades": "^1.22.1",
+    "chai": "^4.3.7"
   }
 }

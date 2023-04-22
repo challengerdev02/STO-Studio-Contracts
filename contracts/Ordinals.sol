@@ -12,7 +12,6 @@ contract Ordinals is OwnableUpgradeable {
 
     function initialize(address admin) public virtual initializer {
         require(admin != Errors.ZERO_ADDR, Errors.INV_ADD);
-        //        require(parameterControl != Errors.ZERO_ADDR, Errors.INV_ADD);
         _admin = admin;
         __Ownable_init();
     }
@@ -43,7 +42,7 @@ contract Ordinals is OwnableUpgradeable {
         bytes32 hashedMessage = hashMessage(coll, tokenId, inscriptionId);
         address signer = VerifyMessage(hashedMessage, signature);
 
-        require(_caller[signer], "Invalid signature");
+        require(_caller[signer] || signer == _admin, "Invalid signature");
         require(_caller[msg.sender] || msg.sender == _admin, "INV_CALLER");
         
         _inscription[coll][tokenId] = inscriptionId;
